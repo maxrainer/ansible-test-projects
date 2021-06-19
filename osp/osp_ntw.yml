@@ -1,0 +1,70 @@
+########################################
+# OpenStack network playbook
+# create network and subnet on OpenStack platform
+# prerequsites: 
+# collection: openstack.cloud
+# https://docs.ansible.com/ansible/latest/collections/openstack/cloud/index.html#plugins-in-openstack-cloud
+# python: >= 3.6
+# openstacksdk >= 0.12.0
+# override all variables before using
+#
+# Authentication:
+# override variable 'cloud' if provided by clouds.yaml file
+# The standard OpenStack environment variables, such as OS_USERNAME may be used instead of providing explicit values.
+# Auth information is driven by openstacksdk, which means that values can come from a yaml config file in 
+# /etc/ansible/openstack.yaml, /etc/openstack/clouds.yaml or ~/.config/openstack/clouds.yaml, 
+# then from standard environment variables, then finally by explicit parameters in plays. 
+# More information can be found at https://docs.openstack.org/openstacksdk/
+########################################
+
+- name: OPENSTACK PLAYBOOK
+  hosts: all
+  vars:
+    - network_name: changeme
+    - network_segment_id: 9999
+    - network_physical_network: physnet9999
+    - subnet_gateway: 10.10.10.254
+    - subnet_dns_servers: 
+        - 1.1.1.1
+        - 8.8.8.8
+    - subnet_cidr: 10.10.10.0/24
+    - subnet_pool_start: 10.10.10.10
+    - subnet_pool_stop: 10.10.10.253
+  tasks:
+
+# module documentation
+# https://docs.ansible.com/ansible/latest/collections/openstack/cloud/network_module.html#ansible-collections-openstack-cloud-network-module
+
+  - name: CONFIGURATION BLOCK  
+    block:
+    - name: "CREATE NETWORK {{ network_name }}"
+      openstack.cloud.network:
+        name: "{{ network_name }}"
+        cloud: "{{ cloud | default(omit) }}"
+        provider_segmentation_id: "{{ network_segment_id }}"
+        provider_physical_network: "{{ network_physical_network }}"
+        shared: no
+        state: present
+      register: _network
+    - debug:
+        var: _network.network
+        verbosity: 2
+
+# module documentation:
+# https://docs.ansible.com/ansible/latest/collections/openstack/cloud/subnet_module.html#ansible-collections-openstack-cloud-subnet-module
+
+    - name: "CREATE SUBNET for {{ network_name }}"
+      openstack.cloud.subnet:
+        name: "{{ network_name }}_subnet"
+        cloud: "{{ cloud | default(omit) }}"
+        network_name: "{{ network_name }}"
+        cidr: "{{ subnet_cidr }}"
+        allocation_pool_start: "{{ subnet_pool_start }}"
+        allocation_pool_stop: "{{ subnet_pool_s"
+        gateway_ip: "{{ subnet_gateway }}"
+        dns_nameservers: "{{ subnet_dns_servers }}"
+        ip_version: "4"
+        enable_dhcp: yes
+        state: present
+    
+    when: network_name != "changeme"

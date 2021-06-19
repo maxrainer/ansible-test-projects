@@ -1,0 +1,31 @@
+- name: Cisco IOS
+  hosts: ios-sw1
+  gather_facts: false
+  connection: network_cli
+  vars:
+    - ansible_playbook_python: "{{ ansible_python_interpreter }}"
+    - vlan_id: 10
+    - description: ten
+
+  tasks: 
+  - name: create vlan
+    cisco.ios.ios_vlans:
+      config: 
+        - vlan_id: "{{ vlan_id }}"
+          name: "{{ description }}"
+          state: active
+      state: merged
+
+  - name: "2.2 Add Vlan To Aggregation Trunks"
+    cisco.ios.ios_l2_interfaces:
+      config: 
+      - name: "Ethernet {{ item }}"
+        trunk:
+          allowed_vlans: "{{ vlan_id }}"
+      state: merged 
+    loop:
+      - 0/1
+      - 0/2
+  
+
+  

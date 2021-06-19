@@ -1,0 +1,37 @@
+- name: ACI TESTS
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  tasks:
+
+  - name: system information
+    cisco.aci.aci_system: 
+      host: sandboxapicdc.cisco.com
+      username: admin
+      password: ciscopsdt
+    register: _system
+
+  - debug:
+      var: _system
+
+
+  - name: Ensure tenant customer-max exists
+    aci_tenant:
+      host: sandboxapicdc.cisco.com
+      username: admin
+      password: ciscopsdt
+      tenant: customer-max
+      description: Customer Max
+      state: present
+
+  - name: query tenants
+    aci_tenant:
+      host: sandboxapicdc.cisco.com
+      username: admin
+      password: ciscopsdt
+      state: query
+    register: _tenant_query
+
+  - debug:
+      var: _tenant_query
+    

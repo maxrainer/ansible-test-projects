@@ -1,0 +1,41 @@
+---
+
+- name: Cisco IOS
+  hosts: iosvl2-1  
+  gather_facts: false
+  connection: network_cli
+  vars:
+    - ansible_playbook_python: "{{ ansible_python_interpreter }}"
+
+  tasks: 
+   - name: gather fact ios
+     cisco.ios.ios_l2_interfaces: 
+       config: 
+         - name: GigabitEthernet0/3
+           access:
+             vlan: 30
+     register: ios_fact
+     become: true
+  
+   - name: print IOS facts
+     debug:
+      var: ios_fact
+
+- name: Juniper JunOS
+  hosts: vqfx1 
+  gather_facts: false
+  connection: network_cli
+
+  tasks: 
+  - name: gather fact junos
+    junipernetworks.junos.junos_l2_interfaces:
+      config:
+        - name: xe-0/0/0:3
+          access:
+            vlan: ten
+      state: merged
+    register: junos_fact
+  
+  - name: print junos facts
+    debug:
+      var: junos_fact
