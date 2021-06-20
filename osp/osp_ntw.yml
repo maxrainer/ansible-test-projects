@@ -23,6 +23,7 @@
     - network_name: apn_network
     - network_segment_id: 9999
     - network_physical_network: datacentre
+    - network_type: vlan
     - subnet_gateway: 10.10.10.254
     - subnet_dns_servers: 
         - 1.1.1.1
@@ -43,6 +44,7 @@
         cloud: "{{ cloud | default(omit) }}"
         provider_segmentation_id: "{{ network_segment_id }}"
         provider_physical_network: "{{ network_physical_network }}"
+        provider_network_type: "{{ network_type }}"
         shared: no
         state: present
       register: _network
