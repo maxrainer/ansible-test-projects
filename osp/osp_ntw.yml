@@ -62,7 +62,7 @@
         network_name: "{{ network_name }}"
         cidr: "{{ subnet_cidr }}"
         allocation_pool_start: "{{ subnet_pool_start }}"
-        allocation_pool_stop: "{{ subnet_pool_stop }}"
+        allocation_pool_end: "{{ subnet_pool_stop }}"
         gateway_ip: "{{ subnet_gateway }}"
         dns_nameservers: "{{ subnet_dns_servers }}"
         ip_version: "4"
