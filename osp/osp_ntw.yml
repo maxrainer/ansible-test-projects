@@ -21,7 +21,7 @@
   hosts: all
   vars:
     - network_name: apn_network
-    - network_segment_id: 9999
+    - network_segment_id: 4094
     - network_physical_network: datacentre
     - network_type: vlan
     - subnet_gateway: 10.10.10.254
