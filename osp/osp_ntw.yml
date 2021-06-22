@@ -19,6 +19,7 @@
 
 - name: OPENSTACK PLAYBOOK
   hosts: all
+  gather_facts: false
   vars:
     - network_name: apn_network
     - network_segment_id: 4094
